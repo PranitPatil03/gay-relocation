@@ -17,7 +17,7 @@ import { Progress } from "@/components/ui/progress";
 import { LGBTQFriendliness } from "./lgbtq-friendliness";
 import { MovemeterChatbot } from "./movemeter-chatbot";
 import { HousingAvailability } from "./housing-availability";
-import Agent from "../agents/page";
+import { Agent } from "./agent";
 export function Movemeter({ fromLocation, toLocation }: { fromLocation: string; toLocation: string }) {
   const [isButtonVisible, setIsButtonVisible] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeftRight, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Movemeter } from "../components/movemeter";
-import Blog from "../blog/page";
+import { Blog } from "../components/blog";
 
 export default function MovemeterLanding() {
   const [fromLocation, setFromLocation] = useState("");

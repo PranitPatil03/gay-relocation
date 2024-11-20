@@ -6,10 +6,8 @@ import { CityComparison } from "../components/city-comparison";
 import { LGBTQFriendliness } from "../components/lgbtq-friendliness";
 import { MovemeterChatbot } from "../components/movemeter-chatbot";
 import { BlogPostPreview } from "../components/blog-post-preview";
-import Agent from "../agents/page";
-import Blog from "../blog/page";
-
-
+import { Agent } from "../components/agent";
+import { Blog } from "../components/blog";
 export default function MovemeterPage() {
   const [selectedCities, setSelectedCities] = useState([
     "Madison, Wisconsin",
