@@ -1,11 +1,13 @@
+"use client";
+
 import React, { useState } from "react";
 import { Movemeter } from "../components/movemeter";
 import { CityComparison } from "../components/city-comparison";
 import { LGBTQFriendliness } from "../components/lgbtq-friendliness";
 import { MovemeterChatbot } from "../components/movemeter-chatbot";
 import { BlogPostPreview } from "../components/blog-post-preview";
-import { Agent } from "../agents/page";
-import { Blog } from "../blog/page";
+import Agent from "../agents/page";
+import Blog from "../blog/page";
 
 
 export default function MovemeterPage() {
