@@ -14,13 +14,56 @@ export default function MovemeterLanding() {
   const [showSummary, setShowSummary] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleCompare = () => {
+  // useEffect(() => {
+  //   const storedData = localStorage.getItem("comparisonData");
+  //   if (storedData) {
+  //     const parsedData = JSON.parse(storedData);
+  //     setFromLocation(parsedData.fromLocation);
+  //     setToLocation(parsedData.toLocation);
+  //     setShowSummary(true);
+  //   }
+  // }, []);
+
+  const handleCompare = async () => {
     if (fromLocation && toLocation) {
       setIsLoading(true);
-      setTimeout(() => {
-        setIsLoading(false);
+      try {
+        const response = await fetch(
+          "https://gay-relocation.onrender.com/comparison",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              city_1: fromLocation,
+              city_2: toLocation,
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const data = await response.json();
+
+        localStorage.setItem(
+          "comparisonData",
+          JSON.stringify({
+            fromLocation,
+            toLocation,
+            data,
+          })
+        );
+
+        console.log(data);
         setShowSummary(true);
-      }, 2000);
+      } catch (error) {
+        console.error("Error fetching comparison data:", error);
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
