@@ -13,6 +13,7 @@ export default function MovemeterLanding() {
   const [toLocation, setToLocation] = useState("");
   const [showSummary, setShowSummary] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [comparisonData, setComparisonData] = useState(null);
 
   // useEffect(() => {
   //   const storedData = localStorage.getItem("comparisonData");
@@ -20,6 +21,7 @@ export default function MovemeterLanding() {
   //     const parsedData = JSON.parse(storedData);
   //     setFromLocation(parsedData.fromLocation);
   //     setToLocation(parsedData.toLocation);
+  //     setComparisonData(parsedData.data);
   //     setShowSummary(true);
   //   }
   // }, []);
@@ -47,18 +49,17 @@ export default function MovemeterLanding() {
         }
 
         const data = await response.json();
-
-        localStorage.setItem(
-          "comparisonData",
-          JSON.stringify({
-            fromLocation,
-            toLocation,
-            data,
-          })
-        );
-
-        console.log(data);
+        
+        const storageData = {
+          fromLocation,
+          toLocation,
+          data
+        };
+        
+        localStorage.setItem("comparisonData", JSON.stringify(storageData));
+        setComparisonData(data);
         setShowSummary(true);
+
       } catch (error) {
         console.error("Error fetching comparison data:", error);
       } finally {
@@ -197,16 +198,20 @@ export default function MovemeterLanding() {
           )}
         </AnimatePresence>
       </motion.div>
-      {showSummary && (
+      {showSummary && comparisonData && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.5 }}
           className="bg-white py-16"
         >
-          <Movemeter fromLocation={fromLocation} toLocation={toLocation} />
+          <Movemeter 
+            data={comparisonData}
+            fromLocation={fromLocation}
+            toLocation={toLocation}
+          />
 
-          <Blog city="San Francisco" />
+          <Blog city={toLocation} />
         </motion.div>
       )}
     </div>

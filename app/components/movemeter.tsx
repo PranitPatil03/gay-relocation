@@ -18,7 +18,56 @@ import { LGBTQFriendliness } from "./lgbtq-friendliness";
 import { MovemeterChatbot } from "./movemeter-chatbot";
 import { HousingAvailability } from "./housing-availability";
 import { Agent } from "./agent";
-export function Movemeter({ fromLocation, toLocation }: { fromLocation: string; toLocation: string }) {
+
+interface MovemeterProps {
+  data: {
+    overall_move_score: {
+      name: string;
+      value: string;
+    };
+    heading: {
+      description: string;
+      title: string;
+    };
+    housing_affordability: {
+      name: string;
+      value: string;
+    };
+    quality_of_life: {
+      name: string;
+      value: string;
+    };
+    job_market_strength: {
+      name: string;
+      value: string;
+    };
+    living_affordability: {
+      name: string;
+      value: string;
+    };
+    city_1: {
+      name: string;
+      data: {
+        [key: string]: Array<{ name: string; value: string }>;
+      };
+    };
+    city_2: {
+      name: string;
+      data: {
+        [key: string]: Array<{ name: string; value: string }>;
+      };
+    };
+    lgbtq_resources: Array<{
+      title: string;
+      description: string;
+      strings: string[];
+    }>;
+  };
+  fromLocation: string;
+  toLocation: string;
+}
+
+export function Movemeter({ data, fromLocation, toLocation }: MovemeterProps) {
   const [isButtonVisible, setIsButtonVisible] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [score, setScore] = useState(0);
@@ -47,12 +96,39 @@ export function Movemeter({ fromLocation, toLocation }: { fromLocation: string; 
     return () => clearInterval(interval);
   }, []);
 
+  const overallScore = parseInt(data.overall_move_score.value.replace("%", ""));
+
   const categories = [
-    { name: "Housing Affordability", icon: Home, score: 45, id: "housing" },
-    { name: "Quality of Life", icon: Heart, score: 80, id: "quality" },
-    { name: "Job Market Strength", icon: Briefcase, score: 65, id: "job" },
-    { name: "Living Affordability", icon: DollarSign, score: 55, id: "living" },
-    { name: "LGBTQ+ Resources", icon: Rainbow, score: 90, id: "lgbtq" },
+    {
+      name: "Housing Affordability",
+      icon: Home,
+      score: parseInt(data.housing_affordability.value),
+      id: "housing",
+    },
+    {
+      name: "Quality of Life",
+      icon: Heart,
+      score: parseInt(data.quality_of_life.value),
+      id: "quality",
+    },
+    {
+      name: "Job Market Strength",
+      icon: Briefcase,
+      score: parseInt(data.job_market_strength.value),
+      id: "job",
+    },
+    {
+      name: "Living Affordability",
+      icon: DollarSign,
+      score: parseInt(data.living_affordability.value),
+      id: "living",
+    },
+    {
+      name: "LGBTQ+ Resources",
+      icon: Rainbow,
+      score: 90, // You might want to calculate this based on lgbtq_resources
+      id: "lgbtq",
+    },
   ];
 
   const scrollToTabs = () => {
@@ -68,16 +144,15 @@ export function Movemeter({ fromLocation, toLocation }: { fromLocation: string; 
       transition={{ duration: 0.5 }}
       className="text-center bg-gray-50"
     >
-      <div
-        className="max-w-7xl mx-auto px-4 py-12"
-      >
+      <div className="max-w-7xl mx-auto px-4 py-12">
         <motion.h2
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-5xl font-bold mb-8 text-[#F1889F]"
         >
-          YOUR MOVE METER® REPORT
+          {/* YOUR MOVE METER® REPORT */}
+          {data.heading.title}
         </motion.h2>
         <motion.p
           initial={{ opacity: 0, y: -20 }}
@@ -85,30 +160,20 @@ export function Movemeter({ fromLocation, toLocation }: { fromLocation: string; 
           transition={{ duration: 0.5, delay: 0.4 }}
           className="text-2xl mb-12 text-gray-700"
         >
-          Based on the data, here&apos;s how your potential move from{" "}
-          <span className="font-semibold">
-            {fromLocation}
-          </span>{" "}
-          to{" "}
-          <span className="font-semibold">
-            {toLocation}
-          </span>{" "}
-          compares
+          {/* Based on the data, here&apos;s how your potential move from{" "}
+          <span className="font-semibold">{fromLocation}</span> to{" "}
+          <span className="font-semibold">{toLocation}</span> compares */}
+          {data.heading.description}
         </motion.p>
 
-        <div
-          className="flex flex-col items-center mb-16 space-y-12"
-        >
+        <div className="flex flex-col items-center mb-16 space-y-12">
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ duration: 0.5, delay: 1 }}
             className="relative w-64 h-64 mb-8"
           >
-            <svg
-              className="w-full h-full"
-              viewBox="0 0 100 100"
-            >
+            <svg className="w-full h-full" viewBox="0 0 100 100">
               <circle
                 cx="50"
                 cy="50"
@@ -133,20 +198,16 @@ export function Movemeter({ fromLocation, toLocation }: { fromLocation: string; 
                 transition={{ duration: 1.5, ease: "easeInOut", delay: 1.5 }}
               />
             </svg>
-            <div
-              className="absolute inset-0 flex flex-col items-center justify-center"
-            >
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
               <motion.span
                 className="text-6xl font-bold text-[#F1889F]"
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, delay: 2 }}
               >
-                87%
+                {overallScore}%
               </motion.span>
-              <span
-                className="text-sm uppercase text-gray-600 mt-2"
-              >
+              <span className="text-sm uppercase text-gray-600 mt-2">
                 Overall Move Score
               </span>
             </div>
@@ -166,26 +227,18 @@ export function Movemeter({ fromLocation, toLocation }: { fromLocation: string; 
                   key={category.id}
                   className="bg-white shadow-md hover:shadow-lg transition-shadow duration-300"
                 >
-                  <CardContent
-                    className="p-6 flex flex-col items-center"
-                  >
-                    <category.icon
-                      className="w-12 h-12 text-[#F1889F] mb-4"
-                    />
+                  <CardContent className="p-6 flex flex-col items-center">
+                    <category.icon className="w-12 h-12 text-[#F1889F] mb-4" />
 
                     <Progress
                       value={category.score}
                       className="w-full h-3 mb-4"
                     />
 
-                    <h3
-                      className="text-sm font-medium text-gray-700 mb-2 text-center"
-                    >
+                    <h3 className="text-sm font-medium text-gray-700 mb-2 text-center">
                       {category.name.toUpperCase()}
                     </h3>
-                    <span
-                      className="text-3xl font-bold text-[#F1889F]"
-                    >
+                    <span className="text-3xl font-bold text-[#F1889F]">
                       {category.score}%
                     </span>
                   </CardContent>
@@ -193,17 +246,13 @@ export function Movemeter({ fromLocation, toLocation }: { fromLocation: string; 
               ))}
           </motion.div>
 
-          <div
-            className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-12"
-          >
+          <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-12">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 2.7 }}
             >
-              <Button
-                className="bg-[#F1889F] hover:bg-[#E16B84] text-white text-lg px-8 py-4 rounded-full transition-all duration-300 flex items-center w-full sm:w-auto justify-center"
-              >
+              <Button className="bg-[#F1889F] hover:bg-[#E16B84] text-white text-lg px-8 py-4 rounded-full transition-all duration-300 flex items-center w-full sm:w-auto justify-center">
                 <Share2 className="mr-2 h-5 w-5" />
                 SHARE REPORT
               </Button>
@@ -219,9 +268,7 @@ export function Movemeter({ fromLocation, toLocation }: { fromLocation: string; 
                 className="text-[#F1889F] text-lg px-8 py-4 rounded-full hover:bg-[#F1889F] hover:text-white transition-all duration-300 flex items-center w-full sm:w-auto justify-center"
                 onClick={scrollToTabs}
               >
-                <FileText
-                  className="mr-2 h-5 w-5"
-                />
+                <FileText className="mr-2 h-5 w-5" />
                 SEE YOUR DETAILED REPORT
               </Button>
             </motion.div>
@@ -234,13 +281,8 @@ export function Movemeter({ fromLocation, toLocation }: { fromLocation: string; 
             className="w-full"
             ref={tabsRef}
           >
-            <Tabs
-              defaultValue="housing"
-              className="w-full mt-8"
-            >
-              <TabsList
-                className="flex justify-center mb-8 p-1 rounded-full bg-gray-50"
-              >
+            <Tabs defaultValue="housing" className="w-full mt-8">
+              <TabsList className="flex justify-center mb-8 p-1 rounded-full bg-gray-50">
                 {categories.map((category) => (
                   <TabsTrigger
                     key={category.id}
@@ -272,10 +314,7 @@ export function Movemeter({ fromLocation, toLocation }: { fromLocation: string; 
                 ))}
               </TabsList>
               {categories.map((category) => (
-                <TabsContent
-                  key={category.id}
-                  value={category.id}
-                >
+                <TabsContent key={category.id} value={category.id}>
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -283,36 +322,20 @@ export function Movemeter({ fromLocation, toLocation }: { fromLocation: string; 
                     className="bg-white p-8 rounded-lg shadow-md"
                   >
                     {category.id === "lgbtq" && (
-                      <LGBTQFriendliness
-                        toLocation={toLocation}
-                      />
+                      console.log("lgbtqResourcesadasdasdasd", data.lgbtq_resources),
+                      <LGBTQFriendliness toLocation={toLocation} lgbtqResources={data.lgbtq_resources} />
                     )}
 
-                    {category.id === "housing" && (
+                    {(category.id === "housing" ||
+                      category.id === "quality" ||
+                      category.id === "job" ||
+                      category.id === "living") && (
                       <HousingAvailability
                         fromLocation={fromLocation}
                         toLocation={toLocation}
-                      />
-                    )}
-
-                    {category.id === "quality" && (
-                      <HousingAvailability
-                        fromLocation={fromLocation}
-                        toLocation={toLocation}
-                      />
-                    )}
-
-                    {category.id === "job" && (
-                      <HousingAvailability
-                        fromLocation={fromLocation}
-                        toLocation={toLocation}
-                      />
-                    )}
-
-                    {category.id === "living" && (
-                      <HousingAvailability
-                        fromLocation={fromLocation}
-                        toLocation={toLocation}
+                        id={category.id}
+                        cityData1={data.city_1}
+                        cityData2={data.city_2}
                       />
                     )}
                   </motion.div>
@@ -335,9 +358,7 @@ export function Movemeter({ fromLocation, toLocation }: { fromLocation: string; 
                 className="bg-[#F1889F] hover:bg-[#E16B84] text-white rounded-full p-4 w-16 h-16 flex items-center justify-center text-xl transition-all duration-300 shadow-lg"
                 onClick={() => setIsChatOpen(true)}
               >
-                <MessageCircle
-                  className="h-8 w-8"
-                />
+                <MessageCircle className="h-8 w-8" />
               </Button>
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
@@ -345,9 +366,7 @@ export function Movemeter({ fromLocation, toLocation }: { fromLocation: string; 
                 transition={{ delay: 0.5 }}
                 className="absolute bottom-full right-0 mb-2 p-3 bg-white rounded-lg shadow-lg whitespace-nowrap"
               >
-                <p
-                  className="text-sm text-gray-700"
-                >
+                <p className="text-sm text-gray-700">
                   Hey, ask your questions about {toLocation}!
                 </p>
               </motion.div>
@@ -358,9 +377,7 @@ export function Movemeter({ fromLocation, toLocation }: { fromLocation: string; 
 
       <AnimatePresence>
         {isChatOpen && (
-          <MovemeterChatbot
-            onClose={() => setIsChatOpen(false)}
-          />
+          <MovemeterChatbot onClose={() => setIsChatOpen(false)} />
         )}
       </AnimatePresence>
 
