@@ -57,7 +57,7 @@ interface MovemeterProps {
         [key: string]: Array<{ name: string; value: string }>;
       };
     };
-    lgbtq_resources: Array<{
+    lgbtq_resources?: Array<{
       title: string;
       description: string;
       strings: string[];
@@ -73,6 +73,8 @@ export function Movemeter({ data, fromLocation, toLocation }: MovemeterProps) {
   const [score, setScore] = useState(0);
   const [activeTab, setActiveTab] = useState("housing");
   const tabsRef = useRef(null);
+
+  console.log("data", data);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -136,6 +138,9 @@ export function Movemeter({ data, fromLocation, toLocation }: MovemeterProps) {
       (tabsRef.current as HTMLElement).scrollIntoView({ behavior: "smooth" });
     }
   };
+
+  const lgbtqResources = data.lgbtq_resources || [];
+  console.log("lgbtqResources 1 ", lgbtqResources);
 
   return (
     <motion.div
@@ -322,14 +327,17 @@ export function Movemeter({ data, fromLocation, toLocation }: MovemeterProps) {
                     className="bg-white p-8 rounded-lg shadow-md"
                   >
                     {category.id === "lgbtq" && (
-                      console.log("lgbtqResourcesadasdasdasd", data.lgbtq_resources),
-                      <LGBTQFriendliness toLocation={toLocation} lgbtqResources={data.lgbtq_resources} />
+                      <LGBTQFriendliness 
+                        toLocation={toLocation} 
+                        lgbtqResources={lgbtqResources} 
+                      />
                     )}
 
                     {(category.id === "housing" ||
                       category.id === "quality" ||
                       category.id === "job" ||
                       category.id === "living") && (
+                        console.log("housingAvailability", data.city_1),
                       <HousingAvailability
                         fromLocation={fromLocation}
                         toLocation={toLocation}

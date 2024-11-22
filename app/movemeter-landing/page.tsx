@@ -49,6 +49,8 @@ export default function MovemeterLanding() {
         }
 
         const data = await response.json();
+
+        console.log("dfsdfsdfe-data", data);
         
         const storageData = {
           fromLocation,
